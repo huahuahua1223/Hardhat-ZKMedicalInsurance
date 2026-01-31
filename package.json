@@ -1,0 +1,31 @@
+{
+  "name": "Hardhat-ZKMedicalInsurance",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build:contracts": "hardhat build",
+    "zk:tree": "hardhat run scripts/zk/build-covered-tree.ts",
+    "zk:compile": "hardhat run scripts/zk/01-compile.ts",
+    "zk:setup": "hardhat run scripts/zk/02-setup-groth16.ts",
+    "zk:input": "hardhat run scripts/zk/make-claim-input.ts",
+    "zk:prove": "hardhat run scripts/zk/03-prove.ts",
+    "zk:export": "hardhat run scripts/zk/export-calldata.ts",
+    "zk:full": "pnpm zk:tree; pnpm zk:compile; pnpm zk:setup; pnpm zk:input; pnpm zk:prove; pnpm zk:export"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^3.0.7",
+    "@nomicfoundation/hardhat-toolbox-viem": "^5.0.2",
+    "@openzeppelin/contracts": "^5.4.0",
+    "@types/circomlibjs": "^0.1.6",
+    "@types/node": "^22.8.5",
+    "@types/snarkjs": "^0.7.9",
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7",
+    "dotenv": "^17.2.3",
+    "forge-std": "github:foundry-rs/forge-std#v1.9.4",
+    "hardhat": "^3.1.5",
+    "snarkjs": "^0.7.6",
+    "typescript": "~5.8.0",
+    "viem": "^2.43.0"
+  }
+}
