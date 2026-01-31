@@ -4,6 +4,12 @@
   "type": "module",
   "scripts": {
     "build:contracts": "hardhat build",
+    "deploy:local": "hardhat ignition deploy ignition/modules/FullSystem.ts",
+    "test": "hardhat test",
+    "test:coverage": "hardhat coverage",
+    "test:gas": "cross-env REPORT_GAS=true hardhat test",
+    "test:unit": "hardhat test test/ZKMedicalInsurance.test.ts test/AccessControl.test.ts test/Groth16Verifier.test.ts test/EdgeCases.test.ts",
+    "test:integration": "hardhat test test/Integration.test.ts",
     "zk:tree": "hardhat run scripts/zk/build-covered-tree.ts",
     "zk:compile": "hardhat run scripts/zk/01-compile.ts",
     "zk:setup": "hardhat run scripts/zk/02-setup-groth16.ts",
