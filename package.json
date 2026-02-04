@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "node": "hardhat node",
     "build:contracts": "hardhat build",
-    "deploy:local": "hardhat ignition deploy ignition/modules/FullSystem.ts",
+    "deploy:local": "hardhat ignition deploy ignition/modules/FullSystem.ts --network localhost",
     "test": "hardhat test",
     "test:coverage": "hardhat coverage",
     "test:gas": "cross-env REPORT_GAS=true hardhat test",
