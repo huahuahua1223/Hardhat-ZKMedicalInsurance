@@ -5,7 +5,8 @@
   "scripts": {
     "node": "hardhat node",
     "build:contracts": "hardhat build",
-    "deploy:local": "hardhat ignition deploy ignition/modules/FullSystem.ts --network localhost",
+    "deploy:local": "hardhat ignition deploy ignition/modules/FullSystem.ts --network localhost --reset",
+    "init:accounts": "hardhat run scripts/init-test-accounts.ts --network localhost",
     "test": "hardhat test",
     "test:coverage": "hardhat coverage",
     "test:gas": "cross-env REPORT_GAS=true hardhat test",
