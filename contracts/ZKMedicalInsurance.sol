@@ -443,6 +443,16 @@ contract ZKMedicalInsurance is AccessControl, Pausable, ReentrancyGuard {
         return _userClaimIds[user].length();
     }
 
+    /**
+     * @notice 获取单个产品详情（带存在性检查）
+     * @param productId 产品 ID
+     * @return 产品详情
+     */
+    function getProduct(uint256 productId) external view returns (Product memory) {
+        Product storage p = _product(productId);
+        return p;
+    }
+
     // ---------------- View: paging (global) ----------------
     function getProductsBriefPage(uint256 cursor, uint256 size)
         external
