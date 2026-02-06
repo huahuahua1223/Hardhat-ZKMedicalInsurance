@@ -231,6 +231,54 @@ contract ZKMedicalInsurance is AccessControl, Pausable, ReentrancyGuard {
         emit ProductUpdated(productId);
     }
 
+    /**
+     * @notice 创建产品并初始注资（合并操作，减少交易次数）
+     * @param token 保费代币地址
+     * @param premiumAmount 保费金额
+     * @param maxCoverage 最大赔付额度
+     * @param coveragePeriodDays 保障期限（天数）
+     * @param coveredRoot 覆盖疾病的 Merkle 根
+     * @param uri 产品元数据 URI
+     * @param initialFunding 初始注资金额（如果为 0 则不注资）
+     * @return productId 新创建的产品 ID
+     */
+    function createProductWithFunding(
+        address token,
+        uint256 premiumAmount,
+        uint256 maxCoverage,
+        uint32 coveragePeriodDays,
+        bytes32 coveredRoot,
+        string calldata uri,
+        uint256 initialFunding
+    ) external whenNotPaused onlyRole(INSURER_ROLE) returns (uint256 productId) {
+        if (token == address(0)) revert ZeroAddress();
+
+        productId = ++_productSeq;
+
+        products[productId] = Product({
+            id: productId,
+            insurer: msg.sender,
+            token: token,
+            premiumAmount: premiumAmount,
+            maxCoverage: maxCoverage,
+            coveragePeriodDays: coveragePeriodDays,
+            coveredRoot: coveredRoot,
+            active: true,
+            createdAt: uint64(block.timestamp),
+            uri: uri
+        });
+
+        _productIds.push(productId);
+        emit ProductCreated(productId, msg.sender, token);
+
+        // 如果有初始注资，立即执行
+        if (initialFunding > 0) {
+            IERC20(token).safeTransferFrom(msg.sender, address(this), initialFunding);
+            productPool[productId] += initialFunding;
+            emit ProductUpdated(productId);
+        }
+    }
+
     // ---------------- Policy (User) ----------------
     function buyPolicy(uint256 productId) external whenNotPaused nonReentrant returns (uint256 policyId) {
         Product storage p = _product(productId);

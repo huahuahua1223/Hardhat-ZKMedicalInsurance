@@ -17,6 +17,13 @@ import {
   createPublicClient,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Hardhat node default RPC
 const RPC_URL = "http://127.0.0.1:8545";
@@ -84,11 +91,35 @@ async function main() {
   console.log(`  Account #2: ${account2.account.address}`);
   console.log(`  Account #3: ${account3.account.address}\n`);
 
-  // Contract addresses (from deployment records)
-  const MOCK_USDT = "0x0165878A594ca255338adfa4d48449f69242Eb8F";
-  const INSURANCE_MANAGER = "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853";
+  // Read contract addresses from deployment file
+  const deploymentPath = path.join(
+    __dirname,
+    "..",
+    "ignition",
+    "deployments",
+    "chain-31337",
+    "deployed_addresses.json"
+  );
 
-  console.log("📋 Contract Addresses:");
+  if (!fs.existsSync(deploymentPath)) {
+    console.error("❌ Deployment file not found:", deploymentPath);
+    console.error("Please deploy contracts first: pnpm deploy:local");
+    process.exitCode = 1;
+    return;
+  }
+
+  const deployedAddresses = JSON.parse(fs.readFileSync(deploymentPath, "utf-8"));
+  const MOCK_USDT = deployedAddresses["MockERC20Module#MockERC20"];
+  const INSURANCE_MANAGER = deployedAddresses["ZKMedicalInsuranceModule#ZKMedicalInsurance"];
+
+  if (!MOCK_USDT || !INSURANCE_MANAGER) {
+    console.error("❌ Contract addresses not found in deployment file");
+    console.error("Available addresses:", Object.keys(deployedAddresses));
+    process.exitCode = 1;
+    return;
+  }
+
+  console.log("📋 Contract Addresses (from deployment file):");
   console.log(`  MockERC20 (USDT): ${MOCK_USDT}`);
   console.log(`  ZKMedicalInsurance: ${INSURANCE_MANAGER}\n`);
 
