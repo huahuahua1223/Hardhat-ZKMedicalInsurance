@@ -95,6 +95,7 @@ contract ZKMedicalInsurance is AccessControl, Pausable, ReentrancyGuard {
         bytes32 dataHash;
         bytes32 nullifier;
         ClaimStatus status;
+        uint64 submittedAt;
     }
 
     // ---------------- Errors ----------------
@@ -514,7 +515,8 @@ contract ZKMedicalInsurance is AccessControl, Pausable, ReentrancyGuard {
                 amount: c.amount,
                 dataHash: c.dataHash,
                 nullifier: c.nullifier,
-                status: c.status
+                status: c.status,
+                submittedAt: c.submittedAt
             });
         }
         nextCursor = nc;
