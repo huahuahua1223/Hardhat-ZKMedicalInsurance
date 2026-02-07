@@ -48,15 +48,15 @@ Hardhat-ZKMedicalInsurance/
 │   └── medical_claim.circom       # 医疗理赔电路
 │
 ├── scripts/                        # 自动化脚本
-│   ├── zk/                        # ZK 证明生成工具链
-│   │   ├── build-covered-tree.ts  # 构建 Merkle 树
-│   │   ├── 01-compile.ts          # 编译电路
-│   │   ├── 02-setup-groth16.ts    # Groth16 设置
-│   │   ├── make-claim-input.ts    # 生成证明输入
-│   │   ├── 03-prove.ts            # 生成证明
-│   │   ├── export-calldata.ts     # 导出调用数据
-│   │   └── README.md              # ZK 工具链文档
-│   └── send-op-tx.ts              # OP Stack 交易示例
+│   ├── init-test-accounts.ts      # 本地测试账户初始化（mint 测试代币）
+│   └── zk/                        # ZK 证明生成工具链
+│       ├── build-covered-tree.ts  # 构建 Merkle 树
+│       ├── 01-compile.ts          # 编译电路
+│       ├── 02-setup-groth16.ts    # Groth16 设置
+│       ├── make-claim-input.ts    # 生成证明输入
+│       ├── 03-prove.ts            # 生成证明
+│       ├── export-calldata.ts     # 导出调用数据
+│       └── README.md              # ZK 工具链文档
 │
 ├── test/                           # 测试套件
 │   ├── ZKMedicalInsurance.test.ts # 核心功能测试
@@ -75,12 +75,6 @@ Hardhat-ZKMedicalInsurance/
 │       ├── ZKMedicalInsurance.ts  # 保险合约部署
 │       ├── Groth16Verifier.ts     # 验证器部署
 │       └── MockERC20.ts           # Mock ERC20 部署
-│
-├── docs/                           # 文档
-│   ├── 合约API速查表.md           # API 快速参考
-│   ├── Lovable前端开发需求文档.md # 前端开发文档
-│   ├── 前端交互流程设计.md        # 交互流程设计
-│   └── 前端架构建议.md            # 架构建议
 │
 ├── zkbuild/                        # ZK 构建输出（.gitignore）
 │   ├── medical_claim.r1cs         # 电路约束系统
@@ -177,10 +171,14 @@ pnpm zk:export    # 6. 导出 Solidity 调用数据
 
 ```powershell
 # 启动本地节点（新终端）
-npx hardhat node
+pnpm node
+# 或: npx hardhat node
 
 # 部署完整系统（包括 MockERC20、Verifier、ZKMedicalInsurance）
 pnpm deploy:local
+
+# 为测试账户 mint 代币（可选，便于前端购买保单）
+pnpm init:accounts
 ```
 
 ### 4. 测试网部署
@@ -313,20 +311,14 @@ npx hardhat test test/ZKMedicalInsurance.test.ts
 npx hardhat test --verbose
 ```
 
-## 📖 API 文档
-
-详细的合约 API 文档请参阅：
-
-- [`docs/合约API速查表.md`](docs/合约API速查表.md) - 快速查找所有合约函数
-- [`scripts/zk/README.md`](scripts/zk/README.md) - ZK 证明生成工具链文档
-- [`docs/前端交互流程设计.md`](docs/前端交互流程设计.md) - 前端集成指南
-
 ## 🛠️ 常用脚本
 
 ```json
 {
   "build:contracts": "编译智能合约",
+  "node": "启动本地 Hardhat 节点",
   "deploy:local": "部署到本地节点",
+  "init:accounts": "为测试账户 mint 代币（本地测试用）",
   "test": "运行所有测试",
   "test:coverage": "生成测试覆盖率报告",
   "test:gas": "生成 Gas 消耗报告",
@@ -394,7 +386,7 @@ MIT License
 
 ---
 
-**最后更新**: 2026-02-02  
+**最后更新**: 2026-02-07  
 **版本**: 1.0.0  
 **Hardhat 版本**: 3.1.5  
 **Solidity 版本**: 0.8.28
