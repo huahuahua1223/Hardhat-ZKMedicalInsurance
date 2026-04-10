@@ -1,15 +1,15 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
 /**
- * MockERC20 代币部署模块
+ * MockERC20 deployment module.
  */
 export default buildModule("MockERC20Module", (m) => {
-  // 参数：代币名称、符号、精度
-  const name = m.getParameter("name", "Test Token");
-  const symbol = m.getParameter("symbol", "TEST");
+  // Default token parameters for local and Sepolia demo deployments.
+  const name = m.getParameter("name", "Insurance Token");
+  const symbol = m.getParameter("symbol", "INS");
   const decimals = m.getParameter("decimals", 6);
 
-  // 部署 MockERC20 合约
+  // Deploy the mock ERC20 token contract.
   const token = m.contract("MockERC20", [name, symbol, decimals]);
 
   return { token };

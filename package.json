@@ -6,6 +6,7 @@
     "node": "hardhat node",
     "build:contracts": "hardhat build",
     "deploy:local": "hardhat ignition deploy ignition/modules/FullSystem.ts --network localhost --reset",
+    "deploy:sepolia": "hardhat ignition deploy ignition/modules/FullSystem.ts --network sepolia --reset --verify",
     "init:accounts": "hardhat run scripts/init-test-accounts.ts --network localhost",
     "test": "hardhat test",
     "test:coverage": "hardhat coverage",
