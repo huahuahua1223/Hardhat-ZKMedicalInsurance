@@ -20,49 +20,49 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-// 该文件由 snarkjs 自动生成。
-// 下面的中文注释仅用于帮助维护者理解验证流程；如果重新导出验证器，这些注释会被覆盖。
 contract Groth16Verifier {
-    // 标量域大小，所有公开输入都必须严格小于该值。
+    // Scalar field size
     uint256 constant r    = 21888242871839275222246405745257275088548364400416034343698204186575808495617;
-    // BN254 曲线基域大小。
+    // Base field size
     uint256 constant q   = 21888242871839275222246405745257275088696311157297823662689037894645226208583;
 
-    // 验证密钥常量。
-    uint256 constant alphax  = 19413573155756749183686801877874893178191264278203245199730728481019552290211;
-    uint256 constant alphay  = 14194900753234013679463218794867159466340950430775455274721218620932988641070;
-    uint256 constant betax1  = 11091306372372606995284331739761244065575769103770201378355651680241359587050;
-    uint256 constant betax2  = 4456028660558962221083788552902186909703272199561200613500668309932277831044;
-    uint256 constant betay1  = 6127380820450343832594855866621455996871796265829701430524753994360212738174;
-    uint256 constant betay2  = 1952616313231957024161736549256935026176446402270290071580291640785841991066;
+    // Verification Key data
+    uint256 constant alphax  = 2881518893720857928539582831937065903129974158588555673365344309464154028163;
+    uint256 constant alphay  = 21511637462821398093444269102617522963610400116322669414099918468989793240584;
+    uint256 constant betax1  = 18545070005445528648316946439516763257436186043224193239582718161977706345437;
+    uint256 constant betax2  = 15961675714194800016517050171202196394550549343154492017319255882495899190836;
+    uint256 constant betay1  = 19399218030587054021236780589458508831020051085710086949768854820113867406849;
+    uint256 constant betay2  = 1435110407032498432964579233572623516384849774568940249439999336100580631069;
     uint256 constant gammax1 = 11559732032986387107991004021392285783925812861821192530917403151452391805634;
     uint256 constant gammax2 = 10857046999023057135944570762232829481370756359578518086990519993285655852781;
     uint256 constant gammay1 = 4082367875863433681332203403145435568316851327593401208105741076214120093531;
     uint256 constant gammay2 = 8495653923123431417604973247489272438418190587263600148770280649306958101930;
-    uint256 constant deltax1 = 8650596171215722580930558054493951244007773669370296960937538604165323676141;
-    uint256 constant deltax2 = 10362441159472902318350923622975686549215009428683027453932162819347818373199;
-    uint256 constant deltay1 = 19184355640508172906891071492987997354844134830420507256519237086777815276209;
-    uint256 constant deltay2 = 10384654958658567681315226290335888393565827380150821471584262747314950432434;
+    uint256 constant deltax1 = 10609635719740796939715743545379235253969316773756571280502456874503331441074;
+    uint256 constant deltax2 = 14173943477585947960718207482027240826191955378960134339429371917656381550679;
+    uint256 constant deltay1 = 2462423712237477942619158142947847210740564832796907352177701428279447442642;
+    uint256 constant deltay2 = 7738609088484166589338254557687502262347233314165855581986822084672997187720;
 
-    uint256 constant IC0x = 11619659085613449661319635478127301504310365616488789123263112378807981428818;
-    uint256 constant IC0y = 10958243967471175981838414271583429127286421581663538306996968184325214233478;
-
-    uint256 constant IC1x = 17999964971999121669715390375258863252535852169252124304472237240434677335952;
-    uint256 constant IC1y = 21503408504661242254112784391350577821114457792190743981518971833337277088017;
-
-    uint256 constant IC2x = 16182325424593887187697082243213606994426392459683938535425354535833044379337;
-    uint256 constant IC2y = 3344096349776938739250387445688929198687271710989722103452478526389837540750;
-
-    uint256 constant IC3x = 3444577559695019255000447716625596779539656923205119088854724826424736270292;
-    uint256 constant IC3y = 16232815482327467542981350419626561695729389425796892224516905621085360814195;
-
-    uint256 constant IC4x = 19148319111164615264719284221984411091966684993161086401839588296060433823521;
-    uint256 constant IC4y = 19698655609398647330832015641802138988650187391002378675029333482952382269568;
-
-    uint256 constant IC5x = 18130370665581223118470908037726133289242493667627027172376958022571294540011;
-    uint256 constant IC5y = 18497811343096085125214726096501670842130328981440940488217930126774470588711;
-
-    // 汇编阶段在内存中的固定偏移。
+    
+    uint256 constant IC0x = 3067986898565923243441518067446473666942210759527560028020955947604203568510;
+    uint256 constant IC0y = 3971901304783472336932758467920863808431623556506399893421112427307347278841;
+    
+    uint256 constant IC1x = 10867197547805153685870015557861217691396386701179537027855668175505179722210;
+    uint256 constant IC1y = 21794794523259914837407229567592533135379920122466572334670489835746487715441;
+    
+    uint256 constant IC2x = 3949265619515758823364499805657652365799948035651593722609247725875410748432;
+    uint256 constant IC2y = 15228266230301382248589640659339436170897729622636773107013798871193452090960;
+    
+    uint256 constant IC3x = 8556140128141608566987242196811067616589546668588851714243077883428117708920;
+    uint256 constant IC3y = 6904312884742644883787458437543398615162368180266188237328029355715497386047;
+    
+    uint256 constant IC4x = 7788964394570216859285234911004276340627941956172075680952838517852321464031;
+    uint256 constant IC4y = 19569120228916449499806601607559463615681090635820646455648867560911830950661;
+    
+    uint256 constant IC5x = 7652371057843044423098837618366643287510151517272497335761367658021154209206;
+    uint256 constant IC5y = 9447679999061594056482598403634655316937447573857153573357338791703061036181;
+    
+ 
+    // Memory data
     uint16 constant pVk = 0;
     uint16 constant pPairing = 128;
 
@@ -70,7 +70,6 @@ contract Groth16Verifier {
 
     function verifyProof(uint[2] calldata _pA, uint[2][2] calldata _pB, uint[2] calldata _pC, uint[5] calldata _pubSignals) public view returns (bool) {
         assembly {
-            // 检查一个值是否落在标量域内，不满足时直接返回 false。
             function checkField(v) {
                 if iszero(lt(v, r)) {
                     mstore(0, 0)
@@ -78,7 +77,7 @@ contract Groth16Verifier {
                 }
             }
             
-            // 将 G1 点 (x, y) 乘以标量 s，并累加到 pR 指向的点上。
+            // G1 function to multiply a G1 value(x,y) to value in an address
             function g1_mulAccC(pR, x, y, s) {
                 let success
                 let mIn := mload(0x40)
@@ -104,7 +103,6 @@ contract Groth16Verifier {
                 }
             }
 
-            // 组装配对检查输入，并执行 Groth16 验证等式。
             function checkPairing(pA, pB, pC, pubSignals, pMem) -> isOk {
                 let _pPairing := add(pMem, pPairing)
                 let _pVk := add(pMem, pVk)
@@ -112,52 +110,60 @@ contract Groth16Verifier {
                 mstore(_pVk, IC0x)
                 mstore(add(_pVk, 32), IC0y)
 
-                // 计算线性组合 vk_x = IC0 + Σ(ICi * publicSignal[i])。
+                // Compute the linear combination vk_x
+                
                 g1_mulAccC(_pVk, IC1x, IC1y, calldataload(add(pubSignals, 0)))
+                
                 g1_mulAccC(_pVk, IC2x, IC2y, calldataload(add(pubSignals, 32)))
+                
                 g1_mulAccC(_pVk, IC3x, IC3y, calldataload(add(pubSignals, 64)))
+                
                 g1_mulAccC(_pVk, IC4x, IC4y, calldataload(add(pubSignals, 96)))
+                
                 g1_mulAccC(_pVk, IC5x, IC5y, calldataload(add(pubSignals, 128)))
+                
 
-                // 写入证明点 A 的相反元。
+                // -A
                 mstore(_pPairing, calldataload(pA))
                 mstore(add(_pPairing, 32), mod(sub(q, calldataload(add(pA, 32))), q))
 
-                // 写入证明点 B。
+                // B
                 mstore(add(_pPairing, 64), calldataload(pB))
                 mstore(add(_pPairing, 96), calldataload(add(pB, 32)))
                 mstore(add(_pPairing, 128), calldataload(add(pB, 64)))
                 mstore(add(_pPairing, 160), calldataload(add(pB, 96)))
 
-                // 写入验证密钥中的 alpha1。
+                // alpha1
                 mstore(add(_pPairing, 192), alphax)
                 mstore(add(_pPairing, 224), alphay)
 
-                // 写入验证密钥中的 beta2。
+                // beta2
                 mstore(add(_pPairing, 256), betax1)
                 mstore(add(_pPairing, 288), betax2)
                 mstore(add(_pPairing, 320), betay1)
                 mstore(add(_pPairing, 352), betay2)
 
-                // 写入线性组合结果 vk_x。
+                // vk_x
                 mstore(add(_pPairing, 384), mload(add(pMem, pVk)))
                 mstore(add(_pPairing, 416), mload(add(pMem, add(pVk, 32))))
 
-                // 写入验证密钥中的 gamma2。
+
+                // gamma2
                 mstore(add(_pPairing, 448), gammax1)
                 mstore(add(_pPairing, 480), gammax2)
                 mstore(add(_pPairing, 512), gammay1)
                 mstore(add(_pPairing, 544), gammay2)
 
-                // 写入证明点 C。
+                // C
                 mstore(add(_pPairing, 576), calldataload(pC))
                 mstore(add(_pPairing, 608), calldataload(add(pC, 32)))
 
-                // 写入验证密钥中的 delta2。
+                // delta2
                 mstore(add(_pPairing, 640), deltax1)
                 mstore(add(_pPairing, 672), deltax2)
                 mstore(add(_pPairing, 704), deltay1)
                 mstore(add(_pPairing, 736), deltay2)
+
 
                 let success := staticcall(sub(gas(), 2000), 8, _pPairing, 768, _pPairing, 0x20)
 
@@ -167,14 +173,20 @@ contract Groth16Verifier {
             let pMem := mload(0x40)
             mstore(0x40, add(pMem, pLastMem))
 
-            // 校验所有公开输入都位于有限域 F_r 中。
+            // Validate that all evaluations ∈ F
+            
             checkField(calldataload(add(_pubSignals, 0)))
+            
             checkField(calldataload(add(_pubSignals, 32)))
+            
             checkField(calldataload(add(_pubSignals, 64)))
+            
             checkField(calldataload(add(_pubSignals, 96)))
+            
             checkField(calldataload(add(_pubSignals, 128)))
+            
 
-            // 执行配对等式验证。
+            // Validate all evaluations
             let isValid := checkPairing(_pA, _pB, _pC, _pubSignals, pMem)
 
             mstore(0, isValid)
