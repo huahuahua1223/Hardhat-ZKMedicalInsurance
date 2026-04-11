@@ -392,17 +392,25 @@ contract ZKMedicalInsurance is AccessControl, Pausable, ReentrancyGuard {
         uint256[2] calldata c,
         uint256[5] calldata input
     ) external whenNotPaused nonReentrant returns (uint256 claimId) {
+        // 第 1 层：先做业务前置校验。
+        // 只有有效保单，且提交者是保单持有人或医院代理地址时，才允许进入后续流程。
         Policy storage pol = _policy(policyId);
         if (pol.status != PolicyStatus.Active) revert PolicyNotActive();
         if (block.timestamp > pol.endAt) revert PolicyExpired();
         if (msg.sender != pol.holder && !hasRole(HOSPITAL_ROLE, msg.sender)) revert Unauthorized();
 
+        // 第 2 层：校验产品状态和赔付上限。
+        // 明显不合法的理赔在这里直接拦截，避免浪费后面的验证 gas。
         Product storage p = _product(pol.productId);
         if (!p.active) revert ProductNotActive();
         if (amount > p.maxCoverage) revert AmountExceedsCoverage();
 
+        // 第 3 层：先检查 nullifier 是否已经使用过，
+        // 防止相同的私有理赔上下文被重复拿来提交。
         if (usedNullifier[nullifier]) revert NullifierAlreadyUsed();
 
+        // 第 4 层：先把 proof 对应的公开输入和链上真实业务数据对齐。
+        // 这样即使 proof 本身有效，也不能拿去伪装成别的保单或别的金额。
         uint256 dataHashField = uint256(dataHash) % SNARK_FIELD;
 
         // 先校验公开输入与当前链上状态严格一致，再调用 verifier。
@@ -412,9 +420,12 @@ contract ZKMedicalInsurance is AccessControl, Pausable, ReentrancyGuard {
         if (input[3] != uint256(p.coveredRoot)) revert InvalidPublicSignals();
         if (input[4] != uint256(nullifier)) revert InvalidPublicSignals();
 
+        // 第 5 层：调用 Groth16 验证器，做真正的密码学证明校验。
         bool ok = verifier.verifyProof(a, b, c, input);
         if (!ok) revert InvalidProof();
 
+        // 第 6 层：验证通过后再落库，并把 nullifier 标记为已使用。
+        // 这样这条理赔就进入 Verified 状态，后面才能进入审核和赔付流程。
         usedNullifier[nullifier] = true;
 
         claimId = ++_claimSeq;

@@ -2,6 +2,10 @@ pragma circom 2.1.8;
 
 include "circomlib/circuits/poseidon.circom";
 
+// 辅助电路：
+// 根据隐藏叶子节点和 Merkle 路径重新计算 Poseidon Merkle 根，
+// 再约束它必须等于公开输入里的 root。
+
 // 基于 Poseidon 哈希的 Merkle 包含证明模板。
 // 输入叶子节点、Merkle 根、路径兄弟节点和路径方向，
 // 输出通过约束保证 leaf 沿路径逐层哈希后等于 root。
@@ -59,6 +63,10 @@ template MerkleInclusion(depth) {
 // 且 nullifier 由 secret 与本次理赔关键信息共同计算得到。
 template MedicalClaim(depth) {
     // -------- 公开输入（5 个）--------
+    // 业务电路：
+    // 在不暴露具体疾病和用户 secret 的前提下，同时证明两件事：
+    // 1）该疾病属于承保疾病集合；
+    // 2）nullifier 确实由这次理赔上下文推导得到。
     signal input policyId;
     signal input amount;
     signal input dataHashField;
@@ -77,6 +85,8 @@ template MedicalClaim(depth) {
 
     // 约束 diseaseId 对应的叶子节点必须属于 coveredRoot 这棵树。
     component inc = MerkleInclusion(depth);
+    // 约束组 1：
+    // 隐藏的 diseaseId 必须能够通过 Merkle 路径还原出公开的 coveredRoot。
     inc.leaf <== leafH.out;
     inc.root <== coveredRoot;
 
@@ -87,6 +97,9 @@ template MedicalClaim(depth) {
 
     // nullifier 必须等于 Poseidon(secret, policyId, amount, dataHashField)。
     component n = Poseidon(4);
+    // 约束组 2：
+    // 公开的 nullifier 必须由用户 secret 和本次理赔公开字段共同计算得到，
+    // 这样相同理赔上下文就不能被重复提交。
     n.inputs[0] <== secret;
     n.inputs[1] <== policyId;
     n.inputs[2] <== amount;
